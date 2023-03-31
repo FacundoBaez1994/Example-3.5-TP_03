@@ -3,6 +3,9 @@
 #include "mbed.h"
 #include "arm_book_lib.h"
 
+#include <cstring>
+#include <string.h>
+
 //=====[Defines]===============================================================
 
 #define NUMBER_OF_KEYS                           4
@@ -21,7 +24,7 @@ DigitalIn aButton(D4);
 DigitalIn bButton(D5);
 DigitalIn cButton(D6);
 DigitalIn dButton(D7);
-DigitalIn mq2(PE_12);
+DigitalIn mq2(D3);
 
 DigitalOut alarmLed(LED1);
 DigitalOut incorrectCodeLed(LED3);
@@ -92,6 +95,7 @@ void inputsInit()
     bButton.mode(PullDown);
     cButton.mode(PullDown);
     dButton.mode(PullDown);
+    mq2.mode(PullUp);
     sirenPin.mode(OpenDrain);
     sirenPin.input();
 }
@@ -302,14 +306,16 @@ void uartTask()
         case 'P':
             potentiometerReading = potentiometer.read();
             sprintf ( str, "Potentiometer: %.2f\r\n", potentiometerReading );
-            stringLength = strlen(str);
+            //stringLength = strlen(str);
+            stringLength = 100;
             uartUsb.write( str, stringLength );
             break;
 
         case 'c':
         case 'C':
             sprintf ( str, "Temperature: %.2f \xB0 C\r\n", lm35TempC );
-            stringLength = strlen(str);
+            //stringLength = strlen(str);
+            stringLength = 100;
             uartUsb.write( str, stringLength );
             break;
 
@@ -317,7 +323,8 @@ void uartTask()
         case 'F':
             sprintf ( str, "Temperature: %.2f \xB0 F\r\n", 
                 celsiusToFahrenheit( lm35TempC ) );
-            stringLength = strlen(str);
+            //stringLength = strlen(str);
+            stringLength = 100;
             uartUsb.write( str, stringLength );
             break;
 
@@ -364,3 +371,5 @@ float celsiusToFahrenheit( float tempInCelsiusDegrees )
 {
     return ( tempInCelsiusDegrees * 9.0 / 5.0 + 32.0 );
 }
+
+
